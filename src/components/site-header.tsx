@@ -9,7 +9,7 @@ export function SiteHeader() {
       <div className="max-w-screen-xl mx-auto px-4 flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center space-x-2">
-            <span className="text-xl font-bold text-primary">SajhaSabha</span>
+            <span className="text-xl font-bold text-primary">PledgePoint</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm ml-10">
             <Link href="/representatives" className="transition-colors hover:text-foreground/80">

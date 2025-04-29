@@ -7,9 +7,9 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-[calc(100vh-4rem)] space-y-12 py-8">
       {/* Hero Section */}
-      <section className="max-w-screen-xl mx-auto px-4 md:px-6 flex flex-col items-center text-center py-12">
+      <section className="container px-4 md:px-6 flex flex-col items-center text-center py-12">
         <h1 className="text-3xl md:text-5xl font-bold tracking-tighter max-w-3xl">
-          SajhaSabha: Empowering Citizens, Strengthening Democracy
+          PledgePoint: Empowering Citizens, Strengthening Democracy
         </h1>
         <p className="mt-6 text-lg text-muted-foreground max-w-[600px]">
           A digital platform that enables Nepali citizens to rate, review, and engage with their elected officials for a more transparent democracy.
@@ -25,9 +25,9 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section className="max-w-screen-xl mx-auto px-4 md:px-6 py-12 bg-muted/40 rounded">
+      <section className="container px-4 md:px-6 py-12 bg-muted/40 rounded-lg">
         <div className="flex flex-col items-center text-center mb-12">
-          <h2 className="text-3xl font-bold tracking-tighter">How SajhaSabha Works</h2>
+          <h2 className="text-3xl font-bold tracking-tighter">How PledgePoint Works</h2>
           <p className="mt-4 text-muted-foreground max-w-[600px]">
             Creating transparency and accountability in Nepal's democratic system
           </p>
@@ -89,7 +89,7 @@ export default function Home() {
       </section>
 
       {/* Featured Content */}
-      <section className="max-w-screen-xl mx-auto px-4 md:px-6 py-12">
+      <section className="container px-4 md:px-6 py-12">
         <div className="flex flex-col items-center text-center mb-12">
           <h2 className="text-3xl font-bold tracking-tighter">Engage with Democracy</h2>
           <p className="mt-4 text-muted-foreground max-w-[600px]">
@@ -182,9 +182,9 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="max-w-screen-xl mx-auto px-4 md:px-6 py-12 bg-primary text-primary-foreground rounded">
+      <section className="container px-4 md:px-6 py-12 bg-primary text-primary-foreground rounded-lg">
         <div className="flex flex-col items-center text-center space-y-4">
-          <h2 className="text-3xl font-bold tracking-tighter">Join SajhaSabha Today</h2>
+          <h2 className="text-3xl font-bold tracking-tighter">Join PledgePoint Today</h2>
           <p className="text-primary-foreground/80 max-w-[600px]">
             Be part of the movement to strengthen Nepal's democracy through citizen engagement
           </p>

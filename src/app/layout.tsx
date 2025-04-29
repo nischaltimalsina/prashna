@@ -5,6 +5,7 @@ import ClientBody from "./ClientBody";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,9 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SajhaSabha - Civic Platform for Democratic Accountability",
+  title: "PledgePoint - Civic Platform for Democratic Accountability",
   description:
-    "SajhaSabha empowers Nepali citizens to rate, review, and engage with their elected officials for a more transparent democracy.",
+    "PledgePoint empowers Nepali citizens to rate, review, and engage with their elected officials for a more transparent democracy.",
 };
 
 export default function RootLayout({
@@ -40,6 +41,7 @@ export default function RootLayout({
               <SiteFooter />
             </div>
           </ClientBody>
+          <Toaster/>
         </ThemeProvider>
       </body>
     </html>

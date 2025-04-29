@@ -6,7 +6,7 @@ export function SiteFooter() {
       <div className="max-w-screen-xl mx-auto flex flex-col gap-6 px-4 py-8 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-col gap-4">
           <Link href="/" className="font-bold text-xl">
-            SajhaSabha
+            PledgePoint
           </Link>
           <p className="text-sm text-muted-foreground max-w-md">
             Empowering Nepali citizens to rate, review, and engage with their elected officials for a more transparent democracy.
@@ -53,7 +53,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t">
         <div className="container flex py-6 text-sm text-muted-foreground">
-          <p>© 2025 SajhaSabha. All rights reserved.</p>
+          <p>© 2025 PledgePoint. All rights reserved.</p>
         </div>
       </div>
     </footer>

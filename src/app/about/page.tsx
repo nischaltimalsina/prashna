@@ -6,10 +6,10 @@ import { CheckCircle, User, ShieldCheck, BarChart4 } from "lucide-react";
 
 export default function AboutPage() {
   return (
-    <div className="max-w-screen-xl mx-auto px-4 py-8 md:py-12">
+    <div className="container px-4 py-8 md:py-12">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold mb-4">About SajhaSabha</h1>
+          <h1 className="text-4xl font-bold mb-4">About PledgePoint</h1>
           <p className="text-xl text-muted-foreground">
             A civic platform empowering Nepali citizens to rate, review, and engage with their elected officials
           </p>
@@ -18,10 +18,10 @@ export default function AboutPage() {
         <div className="mb-16">
           <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
           <p className="text-lg mb-4">
-            SajhaSabha ("Common Assembly" in Nepali) creates transparency and accountability in Nepal's democratic system through a platform that bridges the gap between citizens and their representatives.
+            PledgePoint creates transparency and accountability in Nepal's democratic system through a platform that bridges the gap between citizens and their representatives.
           </p>
           <p className="text-lg mb-4">
-            We believe that democracy works best when citizens have meaningful ways to engage with their elected officials beyond election cycles. SajhaSabha provides the tools for citizens to offer constructive feedback to officials, track promises, and collectively advocate for positive change.
+            We believe that democracy works best when citizens have meaningful ways to engage with their elected officials beyond election cycles. PledgePoint provides the tools for citizens to offer constructive feedback to officials, track promises, and collectively advocate for positive change.
           </p>
           <p className="text-lg">
             By fostering a culture of continuous engagement, we aim to strengthen Nepal's democracy and improve governance through informed citizen participation.
@@ -31,7 +31,7 @@ export default function AboutPage() {
         <Separator className="my-12" />
 
         <div className="mb-16">
-          <h2 className="text-3xl font-bold mb-6">How SajhaSabha Works</h2>
+          <h2 className="text-3xl font-bold mb-6">How PledgePoint Works</h2>
           <p className="text-lg mb-8">
             Our platform empowers citizens with tools to meaningfully engage with democracy:
           </p>
@@ -166,42 +166,42 @@ export default function AboutPage() {
           <h2 className="text-3xl font-bold mb-6">Our Values</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            <div className="border rounded p-6">
+            <div className="border rounded-lg p-6">
               <h3 className="font-semibold text-xl mb-3">Transparency</h3>
               <p className="text-muted-foreground">
                 We believe openness is essential for trust. We are transparent about our processes, data sources, and moderation decisions.
               </p>
             </div>
 
-            <div className="border rounded p-6">
+            <div className="border rounded-lg p-6">
               <h3 className="font-semibold text-xl mb-3">Inclusivity</h3>
               <p className="text-muted-foreground">
                 We design our platform to be accessible to all Nepali citizens regardless of location, language, or technical ability.
               </p>
             </div>
 
-            <div className="border rounded p-6">
+            <div className="border rounded-lg p-6">
               <h3 className="font-semibold text-xl mb-3">Evidence-Based</h3>
               <p className="text-muted-foreground">
                 We prioritize factual information and verifiable claims over opinions, ensuring that ratings and reviews are backed by evidence.
               </p>
             </div>
 
-            <div className="border rounded p-6">
+            <div className="border rounded-lg p-6">
               <h3 className="font-semibold text-xl mb-3">Constructive Engagement</h3>
               <p className="text-muted-foreground">
                 We promote respectful, solution-oriented dialogue rather than partisan attacks or negativity.
               </p>
             </div>
 
-            <div className="border rounded p-6">
+            <div className="border rounded-lg p-6">
               <h3 className="font-semibold text-xl mb-3">Political Neutrality</h3>
               <p className="text-muted-foreground">
                 We do not endorse political parties or ideologies. Our platform serves citizens across the political spectrum.
               </p>
             </div>
 
-            <div className="border rounded p-6">
+            <div className="border rounded-lg p-6">
               <h3 className="font-semibold text-xl mb-3">Continuous Improvement</h3>
               <p className="text-muted-foreground">
                 We constantly evolve our platform based on user feedback and emerging needs in Nepal's democratic landscape.
@@ -215,7 +215,7 @@ export default function AboutPage() {
         <div className="mb-16">
           <h2 className="text-3xl font-bold mb-6">Our Team</h2>
           <p className="text-lg mb-8">
-            SajhaSabha is powered by a dedicated team of Nepali technologists, democracy advocates, and civic-minded professionals committed to strengthening democratic accountability.
+            PledgePoint is powered by a dedicated team of Nepali technologists, democracy advocates, and civic-minded professionals committed to strengthening democratic accountability.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             <div className="flex flex-col items-center text-center">
@@ -242,7 +242,7 @@ export default function AboutPage() {
           </div>
         </div>
 
-        <div className="bg-muted/50 rounded p-8 text-center mb-12">
+        <div className="bg-muted/50 rounded-lg p-8 text-center mb-12">
           <h2 className="text-2xl font-bold mb-4">Join the Movement</h2>
           <p className="text-lg mb-6 max-w-2xl mx-auto">
             Be part of strengthening Nepal's democracy through citizen engagement. Sign up to rate officials, join campaigns, and make your voice heard.

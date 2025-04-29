@@ -131,7 +131,7 @@ export default function DiscussionDetail({ params }: Props) {
   };
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4 py-8">
+    <div className="container px-4 py-8">
       <Link href="/discussions" className="flex items-center text-muted-foreground hover:text-foreground transition-colors text-sm mb-6">
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to discussions
@@ -215,7 +215,7 @@ export default function DiscussionDetail({ params }: Props) {
                   <CardContent className="pt-6">
                     <textarea
                       placeholder="Add your comment..."
-                      className="w-full min-h-24 p-3 border rounded"
+                      className="w-full min-h-24 p-3 border rounded-md"
                     />
                     <div className="flex justify-end mt-4">
                       <Button>Post Comment</Button>
