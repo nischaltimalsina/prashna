@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function FAQPage() {
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4 py-8 md:py-12">
+    <div className="px-4 py-8 md:py-12">
         <h1 className="text-3xl font-bold text-center mb-2">Frequently Asked Questions</h1>
         <p className="text-muted-foreground text-center mb-10">
           Find answers to common questions about using SajhaSabha

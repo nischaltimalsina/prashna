@@ -156,7 +156,7 @@ export default function RepresentativeProfile({ id }: {id:string}) {
   };
 
   return (
-    <div className="container px-4 py-8">
+    <div className="px-4 py-8">
       <div className="mb-6">
         <Link
           href="/representatives"

@@ -98,7 +98,7 @@ export default function ActionsPage() {
   ];
 
   return (
-    <div className="container px-4 py-8 md:py-12">
+    <div className="px-4 py-8 md:py-12">
       <div className="flex flex-col">
         <h1 className="text-3xl font-bold tracking-tight">Take Action</h1>
         <p className="text-muted-foreground mt-2">

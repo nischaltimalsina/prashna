@@ -131,7 +131,7 @@ export default function DiscussionDetail({ params }: Props) {
   };
 
   return (
-    <div className="container px-4 py-8">
+    <div className="px-4 py-8">
       <Link href="/discussions" className="flex items-center text-muted-foreground hover:text-foreground transition-colors text-sm mb-6">
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to discussions

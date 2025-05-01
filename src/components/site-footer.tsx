@@ -3,7 +3,7 @@ import Link from "next/link"
 export function SiteFooter() {
   return (
     <footer className="border-t">
-      <div className="max-w-screen-xl mx-auto flex flex-col gap-6 px-4 py-8 md:flex-row md:items-center md:justify-between">
+      <div className="max-w-(--breakpoint-xl) mx-auto flex flex-col gap-6 px-4 py-8 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-col gap-4">
           <Link href="/" className="font-bold text-xl">
             PledgePoint

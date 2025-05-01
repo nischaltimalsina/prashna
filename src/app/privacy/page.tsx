@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator";
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="max-w-screen-lg mx-auto px-4 py-8 md:py-12">
+    <div className="px-4 py-8 md:py-12">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight mb-2">Privacy Policy</h1>
         <p className="text-muted-foreground">Last updated: April 15, 2025</p>

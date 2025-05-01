@@ -76,7 +76,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4 py-8 md:py-12">
+    <div className="px-4 py-8 md:py-12">
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold tracking-tight mb-4">Contact Us</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
