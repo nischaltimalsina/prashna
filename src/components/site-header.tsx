@@ -16,14 +16,17 @@ export function SiteHeader() {
               Find Representatives
             </Link>
             <Link href="/actions" className="transition-colors hover:text-foreground/80">
-              Take Action
+              Campaigns
             </Link>
             <Link href="/discussions" className="transition-colors hover:text-foreground/80">
               Discussions
             </Link>
-            <Link href="/about" className="transition-colors hover:text-foreground/80">
-              About
+            <Link href="#" className="transition-colors hover:text-foreground/80">
+              Issues
             </Link>
+            {/* <Link href="/about" className="transition-colors hover:text-foreground/80">
+              About
+            </Link> */}
           </nav>
         </div>
         <div className="flex items-center gap-2">
@@ -32,7 +35,11 @@ export function SiteHeader() {
             <span className="sr-only">Search</span>
           </Button>
           <ThemeToggle />
-          <Button className="ml-4">Sign In</Button>
+            <Button variant="default" asChild>
+            <Link href="/auth/login" className="hidden md:inline-flex">
+            Sign In
+            </Link>
+            </Button>
         </div>
       </div>
     </header>

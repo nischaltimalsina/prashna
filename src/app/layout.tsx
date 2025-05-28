@@ -6,6 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
+import {Providers} from "@/providers/providers";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +38,11 @@ export default function RootLayout({
             <div className="flex flex-col min-h-screen">
               <SiteHeader />
               <main className="max-w-screen-xl w-full mx-auto flex-1">
-                {children}
+                <Providers>
+                  <ErrorBoundary>
+                  {children}
+                  </ErrorBoundary>
+                </Providers>
               </main>
               <SiteFooter />
             </div>

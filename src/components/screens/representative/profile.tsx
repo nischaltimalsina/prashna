@@ -1,36 +1,22 @@
-"use client"
+"use client";
+
 import Link from "next/link";
-import {
-  BadgeCheck,
-  ThumbsUp,
-  MessageSquare,
-  FileText,
-  ArrowLeft,
-  Share2,
-  Flag,
-  MapPin,
-  Award,
-  Link as LinkIcon,
-  Calendar,
-} from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { useOfficial } from "@/hooks/useOfficials";
+import { RatingForm } from "@/components/rating/rating-form";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
 import {
   Table,
   TableBody,
@@ -39,121 +25,116 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { RatingForm } from "@/components/rating/rating-form";
+import {
+  AlertCircle,
+  ArrowLeft,
+  BadgeCheck,
+  MessageSquare,
+  Share2,
+  Flag,
+  MapPin,
+  Award,
+  FileText,
+  Link as LinkIcon,
+  Calendar,
+} from "lucide-react";
+import { usePromisesByOfficial } from "@/hooks/usePromises";
 import { toast } from "sonner";
 
-export default function RepresentativeProfile({ id }: {id:string}) {
+export default function RepresentativeProfile({ id }: { id: string }) {
+  // Fetch official data
+  const { data: officialData, isLoading: officialLoading, error: officialError } = useOfficial(id);
 
-  // Mock representative data
-  const representative = {
-    id: id,
-    name: "Asha Sharma",
-    position: "Member of Parliament",
-    constituency: "Kathmandu-3",
-    party: "Nepal Democratic Party",
-    bio: "Dedicated public servant with over 15 years of experience in governance. Focused on education reform, healthcare access, and environmental protection.",
-    ratings: {
-      overall: 4.8,
-      integrity: 4.7,
-      responsiveness: 4.9,
-      effectiveness: 4.6,
-      transparency: 4.8,
-    },
-    stats: {
-      totalReviews: 128,
-      totalActions: 47,
-      promises: { kept: 23, inProgress: 8, broken: 4 },
-    },
-    verified: true,
-    contactInfo: {
-      email: "asha.sharma@parliament.gov.np",
-      phone: "+977-1-4211000",
-      office: "Federal Parliament Building, Singha Durbar, Kathmandu",
-      socialMedia: {
-        twitter: "@AshaSharmaMP",
-        facebook: "AshaSharmaOfficial",
-      },
-    },
-    recentActivity: [
-      {
-        id: 1,
-        type: "legislation",
-        title: "Co-sponsored the Clean Water Act Amendment",
-        date: "April 15, 2025",
-      },
-      {
-        id: 2,
-        type: "public_statement",
-        title: "Issued statement on educational reform priorities",
-        date: "April 8, 2025",
-      },
-      {
-        id: 3,
-        type: "committee",
-        title: "Chaired meeting of the Environmental Oversight Committee",
-        date: "March 29, 2025",
-      },
-    ],
-    committees: [
-      "Education and Human Resources Development",
-      "Environmental Protection",
-      "Women and Social Welfare",
-    ],
-    imageUrl: "",
+  // Fetch official's promises
+  const { data: promisesData, isLoading: promisesLoading } = usePromisesByOfficial(id);
+
+  const handleRatingSubmitted = () => {
+    console.log("Rating submitted, data will refresh automatically");
+    toast.success("Thank you for your rating!");
   };
 
-  // Mock reviews
-  const reviews = [
+  if (officialLoading) {
+    return (
+      <div className="px-4 py-8">
+        <div className="space-y-6">
+          <Skeleton className="h-8 w-48" />
+          <div className="flex gap-6">
+            <Skeleton className="h-32 w-32 rounded-full" />
+            <div className="space-y-4 flex-1">
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-20 w-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (officialError) {
+    return (
+      <div className="px-4 py-8">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Failed to load representative data. Please try again later.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  const representative = officialData?.data;
+  if (!representative) {
+    return <div>Representative not found</div>;
+  }
+
+  // Calculate promise statistics
+  const promises = promisesData?.data || [];
+  const promiseStats = {
+    kept: promises.filter(p => p.status === 'kept').length,
+    inProgress: promises.filter(p => p.status === 'in-progress').length,
+    broken: promises.filter(p => p.status === 'broken').length,
+  };
+
+  // Mock data for sections not yet in API (you can replace these with actual API calls later)
+  const mockReviews = [
     {
       id: 1,
       user: "Ramesh K.",
       rating: 5,
-      comment:
-        "Responsive to community concerns. Helped resolve our water supply issues.",
+      comment: "Responsive to community concerns. Helped resolve our water supply issues.",
       date: "April 12, 2025",
-      dimensions: {
-        integrity: 5,
-        responsiveness: 5,
-        effectiveness: 5,
-        transparency: 4,
-      },
+      dimensions: { integrity: 5, responsiveness: 5, effectiveness: 5, transparency: 4 },
     },
     {
       id: 2,
       user: "Sita G.",
       rating: 4,
-      comment:
-        "Good work on education initiatives, but implementation is somewhat slow.",
+      comment: "Good work on education initiatives, but implementation is somewhat slow.",
       date: "April 5, 2025",
-      dimensions: {
-        integrity: 5,
-        responsiveness: 4,
-        effectiveness: 3,
-        transparency: 5,
-      },
-    },
-    {
-      id: 3,
-      user: "Binod T.",
-      rating: 5,
-      comment:
-        "Very transparent about policy decisions and always available for meetings.",
-      date: "March 22, 2025",
-      dimensions: {
-        integrity: 5,
-        responsiveness: 5,
-        effectiveness: 4,
-        transparency: 5,
-      },
+      dimensions: { integrity: 5, responsiveness: 4, effectiveness: 3, transparency: 5 },
     },
   ];
 
-  const handleRatingSubmitted = () => {
-    // In a real app, you would refetch the representative data
-    // to get the updated ratings
-    console.log("Rating submitted, should refresh data");
-    toast.success("Thank you for your rating!");
-  };
+  const mockVotingRecord = [
+    { bill: "Education Reform Act", date: "April 10, 2025", vote: "For" },
+    { bill: "Infrastructure Development Fund", date: "March 25, 2025", vote: "For" },
+    { bill: "Natural Resources Act Amendment", date: "March 15, 2025", vote: "Against" },
+  ];
+
+  const mockStatements = [
+    {
+      title: "Statement on Educational Reform",
+      date: "April 8, 2025",
+      description: "Outlined a five-point plan to improve rural access to quality education.",
+    },
+    {
+      title: "Press Conference on Infrastructure",
+      date: "March 22, 2025",
+      description: "Addressed concerns about road construction delays and announced new oversight measures.",
+    },
+  ];
 
   return (
     <div className="px-4 py-8">
@@ -166,10 +147,11 @@ export default function RepresentativeProfile({ id }: {id:string}) {
           Back to representatives
         </Link>
 
+        {/* Header section with representative info */}
         <div className="flex flex-col md:flex-row gap-6 items-start">
           <Avatar className="h-24 w-24 md:h-32 md:w-32">
             <AvatarImage
-              src={representative.imageUrl}
+              src={representative.photo || ""}
               alt={representative.name}
             />
             <AvatarFallback className="text-xl md:text-3xl bg-primary/10 text-primary">
@@ -195,15 +177,16 @@ export default function RepresentativeProfile({ id }: {id:string}) {
 
             <div className="flex items-center gap-1 mt-3 text-muted-foreground">
               <MapPin className="h-4 w-4" />
-              <span>{representative.constituency}</span>
+              <span>{representative.district}</span>
             </div>
 
             <p className="mt-4 text-muted-foreground">{representative.bio}</p>
 
             <div className="flex gap-3 mt-6">
-              <RatingForm  politicianId={representative.id}
-              politicianName={representative.name}
-              onRatingSubmitted={handleRatingSubmitted}/>
+              <RatingForm
+                official={representative}
+                onSuccess={handleRatingSubmitted}
+              />
               <Button variant="outline">
                 <MessageSquare className="mr-2 h-4 w-4" />
                 Contact
@@ -217,16 +200,17 @@ export default function RepresentativeProfile({ id }: {id:string}) {
             </div>
           </div>
 
+          {/* Rating card with real data */}
           <div className="bg-card border rounded-lg p-4 w-full md:w-64 mt-6 md:mt-0">
             <div className="text-center mb-4">
               <div className="text-3xl font-bold">
-                {representative.ratings.overall}
+                {representative.averageRating.overall.toFixed(1)}
               </div>
               <div className="text-sm text-muted-foreground">
                 Overall Rating
               </div>
               <div className="text-xs mt-1">
-                {representative.stats.totalReviews} reviews
+                {representative.totalRatings} reviews
               </div>
             </div>
 
@@ -237,11 +221,11 @@ export default function RepresentativeProfile({ id }: {id:string}) {
                 <div className="flex justify-between text-sm mb-1">
                   <span>Integrity</span>
                   <span className="font-medium">
-                    {representative.ratings.integrity}
+                    {representative.averageRating.integrity.toFixed(1)}
                   </span>
                 </div>
                 <Progress
-                  value={representative.ratings.integrity * 20}
+                  value={representative.averageRating.integrity * 20}
                   className="h-2"
                 />
               </div>
@@ -250,11 +234,11 @@ export default function RepresentativeProfile({ id }: {id:string}) {
                 <div className="flex justify-between text-sm mb-1">
                   <span>Responsiveness</span>
                   <span className="font-medium">
-                    {representative.ratings.responsiveness}
+                    {representative.averageRating.responsiveness.toFixed(1)}
                   </span>
                 </div>
                 <Progress
-                  value={representative.ratings.responsiveness * 20}
+                  value={representative.averageRating.responsiveness * 20}
                   className="h-2"
                 />
               </div>
@@ -263,11 +247,11 @@ export default function RepresentativeProfile({ id }: {id:string}) {
                 <div className="flex justify-between text-sm mb-1">
                   <span>Effectiveness</span>
                   <span className="font-medium">
-                    {representative.ratings.effectiveness}
+                    {representative.averageRating.effectiveness.toFixed(1)}
                   </span>
                 </div>
                 <Progress
-                  value={representative.ratings.effectiveness * 20}
+                  value={representative.averageRating.effectiveness * 20}
                   className="h-2"
                 />
               </div>
@@ -276,11 +260,11 @@ export default function RepresentativeProfile({ id }: {id:string}) {
                 <div className="flex justify-between text-sm mb-1">
                   <span>Transparency</span>
                   <span className="font-medium">
-                    {representative.ratings.transparency}
+                    {representative.averageRating.transparency.toFixed(1)}
                   </span>
                 </div>
                 <Progress
-                  value={representative.ratings.transparency * 20}
+                  value={representative.averageRating.transparency * 20}
                   className="h-2"
                 />
               </div>
@@ -299,6 +283,7 @@ export default function RepresentativeProfile({ id }: {id:string}) {
 
         <div className="mt-6">
           <TabsContent value="overview" className="space-y-8">
+            {/* Promise Tracker with real data */}
             <Card>
               <CardHeader>
                 <CardTitle>Promise Tracker</CardTitle>
@@ -310,21 +295,19 @@ export default function RepresentativeProfile({ id }: {id:string}) {
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div className="p-4 rounded-lg bg-green-50 dark:bg-green-900/20">
                     <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                      {representative.stats.promises.kept}
+                      {promiseStats.kept}
                     </div>
                     <div className="text-sm text-muted-foreground">Kept</div>
                   </div>
                   <div className="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20">
                     <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
-                      {representative.stats.promises.inProgress}
+                      {promiseStats.inProgress}
                     </div>
-                    <div className="text-sm text-muted-foreground">
-                      In Progress
-                    </div>
+                    <div className="text-sm text-muted-foreground">In Progress</div>
                   </div>
                   <div className="p-4 rounded-lg bg-red-50 dark:bg-red-900/20">
                     <div className="text-2xl font-bold text-red-600 dark:text-red-400">
-                      {representative.stats.promises.broken}
+                      {promiseStats.broken}
                     </div>
                     <div className="text-sm text-muted-foreground">Broken</div>
                   </div>
@@ -339,15 +322,6 @@ export default function RepresentativeProfile({ id }: {id:string}) {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2">
-                    {representative.committees.map((committee, i) => (
-                      <li
-                        key={`committee-${i}-${committee}`}
-                        className="flex items-start"
-                      >
-                        <Award className="h-5 w-5 text-primary mr-2 mt-0.5" />
-                        <span>{committee}</span>
-                      </li>
-                    ))}
                   </ul>
                 </CardContent>
               </Card>
@@ -358,17 +332,7 @@ export default function RepresentativeProfile({ id }: {id:string}) {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-4">
-                    {representative.recentActivity.map((activity) => (
-                      <li key={activity.id} className="flex items-start">
-                        <FileText className="h-5 w-5 text-primary mr-2 mt-0.5" />
-                        <div>
-                          <div className="font-medium">{activity.title}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {activity.date}
-                          </div>
-                        </div>
-                      </li>
-                    ))}
+                      <li className="text-muted-foreground">No recent activity available</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -382,7 +346,7 @@ export default function RepresentativeProfile({ id }: {id:string}) {
             </div>
 
             <div className="space-y-4">
-              {reviews.map((review) => (
+              {mockReviews.map((review) => (
                 <Card key={review.id}>
                   <CardContent className="pt-6">
                     <div className="flex justify-between items-start">
@@ -408,25 +372,19 @@ export default function RepresentativeProfile({ id }: {id:string}) {
                         </div>
                       </div>
                       <div className="text-xs">
-                        <div className="text-muted-foreground">
-                          Responsiveness
-                        </div>
+                        <div className="text-muted-foreground">Responsiveness</div>
                         <div className="font-medium">
                           {review.dimensions.responsiveness}/5
                         </div>
                       </div>
                       <div className="text-xs">
-                        <div className="text-muted-foreground">
-                          Effectiveness
-                        </div>
+                        <div className="text-muted-foreground">Effectiveness</div>
                         <div className="font-medium">
                           {review.dimensions.effectiveness}/5
                         </div>
                       </div>
                       <div className="text-xs">
-                        <div className="text-muted-foreground">
-                          Transparency
-                        </div>
+                        <div className="text-muted-foreground">Transparency</div>
                         <div className="font-medium">
                           {review.dimensions.transparency}/5
                         </div>
@@ -460,42 +418,21 @@ export default function RepresentativeProfile({ id }: {id:string}) {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        Education Reform Act
-                      </TableCell>
-                      <TableCell>April 10, 2025</TableCell>
-                      <TableCell className="text-green-600 dark:text-green-400">
-                        For
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        Infrastructure Development Fund
-                      </TableCell>
-                      <TableCell>March 25, 2025</TableCell>
-                      <TableCell className="text-green-600 dark:text-green-400">
-                        For
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        Natural Resources Act Amendment
-                      </TableCell>
-                      <TableCell>March 15, 2025</TableCell>
-                      <TableCell className="text-red-600 dark:text-red-400">
-                        Against
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        Public Health Emergency Bill
-                      </TableCell>
-                      <TableCell>February 28, 2025</TableCell>
-                      <TableCell className="text-green-600 dark:text-green-400">
-                        For
-                      </TableCell>
-                    </TableRow>
+                    {mockVotingRecord.map((record, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="font-medium">{record.bill}</TableCell>
+                        <TableCell>{record.date}</TableCell>
+                        <TableCell
+                          className={
+                            record.vote === "For"
+                              ? "text-green-600 dark:text-green-400"
+                              : "text-red-600 dark:text-red-400"
+                          }
+                        >
+                          {record.vote}
+                        </TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </CardContent>
@@ -510,42 +447,17 @@ export default function RepresentativeProfile({ id }: {id:string}) {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-4">
-                  <li className="border-b pb-4">
-                    <div className="flex items-center justify-between">
-                      <div className="font-medium">
-                        Statement on Educational Reform
+                  {mockStatements.map((statement, index) => (
+                    <li key={index} className="border-b pb-4 last:border-b-0">
+                      <div className="flex items-center justify-between">
+                        <div className="font-medium">{statement.title}</div>
+                        <Badge variant="outline">{statement.date}</Badge>
                       </div>
-                      <Badge variant="outline">April 8, 2025</Badge>
-                    </div>
-                    <p className="mt-2 text-muted-foreground">
-                      Outlined a five-point plan to improve rural access to
-                      quality education throughout the Kathmandu region.
-                    </p>
-                  </li>
-                  <li className="border-b pb-4">
-                    <div className="flex items-center justify-between">
-                      <div className="font-medium">
-                        Press Conference on Infrastructure
-                      </div>
-                      <Badge variant="outline">March 22, 2025</Badge>
-                    </div>
-                    <p className="mt-2 text-muted-foreground">
-                      Addressed concerns about road construction delays and
-                      announced new oversight measures.
-                    </p>
-                  </li>
-                  <li>
-                    <div className="flex items-center justify-between">
-                      <div className="font-medium">
-                        Joint Statement on Water Conservation
-                      </div>
-                      <Badge variant="outline">March 10, 2025</Badge>
-                    </div>
-                    <p className="mt-2 text-muted-foreground">
-                      Co-signed a multi-party statement committing to water
-                      protection measures in drought-affected regions.
-                    </p>
-                  </li>
+                      <p className="mt-2 text-muted-foreground">
+                        {statement.description}
+                      </p>
+                    </li>
+                  ))}
                 </ul>
               </CardContent>
             </Card>
@@ -567,10 +479,10 @@ export default function RepresentativeProfile({ id }: {id:string}) {
                   <div>
                     <div className="font-medium">Email</div>
                     <a
-                      href={`mailto:${representative.contactInfo.email}`}
+                      href={`mailto:${representative.contactInfo?.email}`}
                       className="text-primary hover:underline"
                     >
-                      {representative.contactInfo.email}
+                      {representative.contactInfo?.email}
                     </a>
                   </div>
                 </div>
@@ -581,7 +493,7 @@ export default function RepresentativeProfile({ id }: {id:string}) {
                   </div>
                   <div>
                     <div className="font-medium">Phone</div>
-                    <div>{representative.contactInfo.phone}</div>
+                    <div>{representative.contactInfo?.phone || "Contact office for phone number"}</div>
                   </div>
                 </div>
 
@@ -591,32 +503,38 @@ export default function RepresentativeProfile({ id }: {id:string}) {
                   </div>
                   <div>
                     <div className="font-medium">Office</div>
-                    <div>{representative.contactInfo.office}</div>
+                    <div>{representative.contactInfo?.office}</div>
                   </div>
                 </div>
 
-                <div className="flex items-start">
-                  <div className="mr-3 p-2 rounded-full bg-primary/10">
-                    <Share2 className="h-4 w-4 text-primary" />
-                  </div>
-                  <div>
-                    <div className="font-medium">Social Media</div>
-                    <div className="flex gap-4 mt-2">
-                      <a
-                        href="https://twitter.com/"
-                        className="text-primary hover:underline"
-                      >
-                        {representative.contactInfo.socialMedia.twitter}
-                      </a>
-                      <a
-                        href="https://facebook.com/"
-                        className="text-primary hover:underline"
-                      >
-                        {representative.contactInfo.socialMedia.facebook}
-                      </a>
+                {representative.contactInfo?.socialMedia && (
+                  <div className="flex items-start">
+                    <div className="mr-3 p-2 rounded-full bg-primary/10">
+                      <Share2 className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <div className="font-medium">Social Media</div>
+                      <div className="flex gap-4 mt-2">
+                        {representative.contactInfo.socialMedia.twitter && (
+                          <a
+                            href="https://twitter.com/"
+                            className="text-primary hover:underline"
+                          >
+                            {representative.contactInfo.socialMedia.twitter}
+                          </a>
+                        )}
+                        {representative.contactInfo.socialMedia.facebook && (
+                          <a
+                            href="https://facebook.com/"
+                            className="text-primary hover:underline"
+                          >
+                            {representative.contactInfo.socialMedia.facebook}
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </CardContent>
             </Card>
 

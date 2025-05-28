@@ -263,9 +263,9 @@ export default function DiscussionDetail({ params }: Props) {
                             </div>
 
                             {comment.replies && comment.replies.length > 0 && (
-                              <div className="ml-6 mt-4 space-y-4">
+                              <div className="ml-6 mt-4">
                                 {comment.replies.map((reply) => (
-                                  <div key={reply.id} className="border-l-2 pl-4 pt-2">
+                                  <div key={reply.id} className="border-l pl-4 not-[:last-of-type]:pb-4">
                                     <div className="flex items-start gap-3">
                                       <Avatar className="h-6 w-6">
                                         <AvatarFallback className="bg-primary/10 text-primary text-xs">
