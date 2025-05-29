@@ -6,22 +6,29 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Shield, Lock, Mail, AlertCircle } from 'lucide-react';
-import { useAuth } from '@/providers/auth-provider';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAuth } from "@/hooks/useAuth"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 // Define login form schema
 const loginSchema = z.object({
-  email: z.string().email({ message: 'Please enter a valid email address' }),
-  password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
-});
+  email: z.string().email({ message: "Please enter a valid email address" }),
+  password: z.string().min(8, { message: "Password must be at least 8 characters" }),
+})
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type LoginFormData = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
-  const { login } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { login } = useAuth()
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const {
     register,
@@ -30,29 +37,29 @@ export default function LoginPage() {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
-  });
+  })
 
   const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
-    setErrorMessage(null);
+    setIsLoading(true)
+    setErrorMessage(null)
 
     try {
-      const response  = await login(data.email, data.password);
-      console.log('Login:', response);
+      const response = await login(data)
+      console.log("Login:", response)
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error)
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : 'Failed to login. Please check your credentials and try again.'
-      );
+          : "Failed to login. Please check your credentials and try again."
+      )
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
@@ -70,9 +77,7 @@ export default function LoginPage() {
         <Card>
           <CardHeader>
             <CardTitle>Login to your account</CardTitle>
-            <CardDescription>
-              Enter your credentials to access the platform
-            </CardDescription>
+            <CardDescription>Enter your credentials to access the platform</CardDescription>
           </CardHeader>
           <CardContent>
             {errorMessage && (
@@ -95,18 +100,14 @@ export default function LoginPage() {
                     id="email"
                     type="email"
                     className={`w-full rounded-md border pl-10 py-2 text-sm ${
-                      errors.email
-                        ? 'border-destructive focus:ring-destructive'
-                        : 'border-input'
+                      errors.email ? "border-destructive focus:ring-destructive" : "border-input"
                     }`}
                     placeholder="Enter your email"
-                    {...register('email')}
+                    {...register("email")}
                   />
                 </div>
                 {errors.email && (
-                  <p className="mt-1 text-xs text-destructive">
-                    {errors.email.message}
-                  </p>
+                  <p className="mt-1 text-xs text-destructive">{errors.email.message}</p>
                 )}
               </div>
 
@@ -122,18 +123,14 @@ export default function LoginPage() {
                     id="password"
                     type="password"
                     className={`w-full rounded-md border pl-10 py-2 text-sm ${
-                      errors.password
-                        ? 'border-destructive focus:ring-destructive'
-                        : 'border-input'
+                      errors.password ? "border-destructive focus:ring-destructive" : "border-input"
                     }`}
                     placeholder="Enter your password"
-                    {...register('password')}
+                    {...register("password")}
                   />
                 </div>
                 {errors.password && (
-                  <p className="mt-1 text-xs text-destructive">
-                    {errors.password.message}
-                  </p>
+                  <p className="mt-1 text-xs text-destructive">{errors.password.message}</p>
                 )}
               </div>
 
@@ -144,27 +141,17 @@ export default function LoginPage() {
                     id="remember"
                     className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                   />
-                  <label
-                    htmlFor="remember"
-                    className="text-sm text-muted-foreground"
-                  >
+                  <label htmlFor="remember" className="text-sm text-muted-foreground">
                     Remember me
                   </label>
                 </div>
-                <Link
-                  href="/auth/forgot-password"
-                  className="text-sm text-primary hover:underline"
-                >
+                <Link href="/auth/forgot-password" className="text-sm text-primary hover:underline">
                   Forgot password?
                 </Link>
               </div>
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Logging in...' : 'Log in'}
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Logging in..." : "Log in"}
               </Button>
             </form>
           </CardContent>
@@ -176,5 +163,5 @@ export default function LoginPage() {
         </Card>
       </div>
     </div>
-  );
+  )
 }

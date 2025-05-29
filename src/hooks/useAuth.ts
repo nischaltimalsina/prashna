@@ -20,16 +20,24 @@ export const useAuth = () => {
   // Register mutation
   const registerMutation = useMutation({
     mutationFn: (data: RegisterRequest) => authApi.register(data),
-    onSuccess: (data: AuthResponse) => {
-      queryClient.setQueryData(["auth", "me"], { data: data.data.user })
+    onSuccess: (authResponse: AuthResponse) => {
+      // Store the user data in React Query cache
+      queryClient.setQueryData(["auth", "me"], {
+        success: true,
+        data: authResponse.data.user,
+      })
     },
   })
 
-  // Login mutation
+  // Login mutation - Fixed to handle your API response
   const loginMutation = useMutation({
     mutationFn: (data: LoginRequest) => authApi.login(data),
-    onSuccess: (data: AuthResponse) => {
-      queryClient.setQueryData(["auth", "me"], { data: data.data.user })
+    onSuccess: (authResponse: AuthResponse) => {
+      // Store the user data in React Query cache
+      queryClient.setQueryData(["auth", "me"], {
+        success: true,
+        data: authResponse.data.user,
+      })
     },
   })
 
@@ -52,24 +60,6 @@ export const useAuth = () => {
     },
   })
 
-  // Forgot password mutation
-  const forgotPasswordMutation = useMutation({
-    mutationFn: (email: string) => authApi.forgotPassword(email),
-  })
-
-  // Reset password mutation
-  const resetPasswordMutation = useMutation({
-    mutationFn: ({
-      token,
-      password,
-      confirmPassword,
-    }: {
-      token: string
-      password: string
-      confirmPassword: string
-    }) => authApi.resetPassword(token, password, confirmPassword),
-  })
-
   return {
     user: user?.data,
     isLoading,
@@ -79,8 +69,6 @@ export const useAuth = () => {
     login: loginMutation.mutate,
     logout: logoutMutation.mutate,
     updateProfile: updateProfileMutation.mutate,
-    forgotPassword: forgotPasswordMutation.mutate,
-    resetPassword: resetPasswordMutation.mutate,
     registerLoading: registerMutation.isPending,
     loginLoading: loginMutation.isPending,
     updateLoading: updateProfileMutation.isPending,

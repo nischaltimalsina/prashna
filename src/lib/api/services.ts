@@ -25,39 +25,62 @@ import {
 // Auth Service
 export const authApi = {
   register: async (data: RegisterRequest): globalThis.Promise<AuthResponse> => {
-    const response = await apiClient.post<AuthResponse>('/auth/register', data);
-    if (response.data.data.token) {
-      setAuthToken(response.data.data.token);
+    const response = await apiClient.post<AuthResponse>("/auth/register", data)
+    const authResponse = response.data
+
+    if (authResponse.data.accessToken) {
+      setAuthToken(authResponse.data.accessToken)
     }
-    return response.data;
+    return authResponse
   },
 
   login: async (data: LoginRequest): globalThis.Promise<AuthResponse> => {
-    const response = await apiClient.post<AuthResponse>('/auth/login', data);
-    if (response.data.data.token) {
-      setAuthToken(response.data.data.token);
+    const response = await apiClient.post<AuthResponse>("/auth/login", data)
+    const authResponse = response.data
+
+    if (authResponse.data.accessToken) {
+      setAuthToken(authResponse.data.accessToken)
     }
-    return response.data;
+    return authResponse
   },
 
   refreshToken: async (refreshToken: string): globalThis.Promise<AuthResponse> => {
-    const response = await apiClient.post<AuthResponse>('/auth/refresh-token', {
+    const response = await apiClient.post<AuthResponse>("/auth/refresh-token", {
       refreshToken,
-    });
-    if (response.data.data.token) {
-      setAuthToken(response.data.data.token);
+    })
+    const authResponse = response.data
+
+    if (authResponse.data.accessToken) {
+      setAuthToken(authResponse.data.accessToken)
     }
-    return response.data;
+    return authResponse
+  },
+
+  getCurrentUser: async (): globalThis.Promise<ApiResponse<User>> => {
+    const response = await apiClient.get<ApiResponse<User>>("/auth/me")
+    return response.data
+  },
+
+  updateProfile: async (data: Partial<User>): globalThis.Promise<ApiResponse<User>> => {
+    const response = await apiClient.patch<ApiResponse<User>>("/auth/me", data)
+    return response.data
+  },
+
+  logout: () => {
+    setAuthToken(null)
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("refresh_token")
+    }
   },
 
   verifyEmail: async (token: string): globalThis.Promise<ApiResponse<any>> => {
-    const response = await apiClient.get<ApiResponse<any>>(`/auth/verify-email/${token}`);
-    return response.data;
+    const response = await apiClient.get<ApiResponse<any>>(`/auth/verify-email/${token}`)
+    return response.data
   },
 
   forgotPassword: async (email: string): globalThis.Promise<ApiResponse<any>> => {
-    const response = await apiClient.post<ApiResponse<any>>('/auth/forgot-password', { email });
-    return response.data;
+    const response = await apiClient.post<ApiResponse<any>>("/auth/forgot-password", { email })
+    return response.data
   },
 
   resetPassword: async (
@@ -68,27 +91,10 @@ export const authApi = {
     const response = await apiClient.post<ApiResponse<any>>(`/auth/reset-password/${token}`, {
       password,
       confirmPassword,
-    });
-    return response.data;
+    })
+    return response.data
   },
-
-  getCurrentUser: async (): globalThis.Promise<ApiResponse<User>> => {
-    const response = await apiClient.get<ApiResponse<User>>('/auth/me');
-    return response.data;
-  },
-
-  updateProfile: async (data: Partial<User>): globalThis.Promise<ApiResponse<User>> => {
-    const response = await apiClient.patch<ApiResponse<User>>('/auth/me', data);
-    return response.data;
-  },
-
-  logout: () => {
-    setAuthToken(null);
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('refresh_token');
-    }
-  },
-};
+}
 
 // Officials Service
 export const officialsApi = {

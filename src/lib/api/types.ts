@@ -1,16 +1,16 @@
 export interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  district?: string;
-  bio?: string;
-  role: 'user' | 'moderator' | 'admin' | 'superadmin';
-  level: 'citizen' | 'advocate' | 'leader';
-  impactPoints: number;
-  accountStatus: 'active' | 'suspended' | 'pending';
-  createdAt: string;
-  updatedAt: string;
+  _id: string
+  firstName: string
+  lastName: string
+  email: string
+  district?: string
+  bio?: string
+  role: "user" | "moderator" | "admin" | "superadmin"
+  level: "citizen" | "advocate" | "leader"
+  impactPoints: number
+  accountStatus: "active" | "suspended" | "pending"
+  createdAt: string
+  updatedAt: string
 }
 
 export interface Official {
@@ -185,13 +185,13 @@ export interface PaginatedResponse<T> {
 }
 
 export interface AuthResponse {
-  success: boolean;
+  status: string
+  message: string
   data: {
-    user: User;
-    token: string;
-    refreshToken: string;
-  };
-  message?: string;
+    accessToken: string
+    user: User
+    refreshToken?: string
+  }
 }
 
 // Request types
