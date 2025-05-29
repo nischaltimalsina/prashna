@@ -40,7 +40,8 @@ export default function LoginPage() {
     setErrorMessage(null);
 
     try {
-      await login(data.email, data.password);
+      const response  = await login(data.email, data.password);
+      console.log('Login:', response);
     } catch (error) {
       console.error('Login error:', error);
       setErrorMessage(

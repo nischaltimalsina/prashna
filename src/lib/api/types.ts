@@ -14,7 +14,7 @@ export interface User {
 }
 
 export interface Official {
-  id: string;
+  _id: string;
   name: string
   position: string
   district: string
