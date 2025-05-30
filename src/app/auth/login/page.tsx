@@ -1,11 +1,11 @@
-'use client';
+"use client"
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Shield, Lock, Mail, AlertCircle } from 'lucide-react';
+import { useState } from "react"
+import Link from "next/link"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { Shield, Lock, Mail, AlertCircle } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,18 +17,16 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-// Define login form schema
+// Login form schema
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
-  password: z.string().min(8, { message: "Password must be at least 8 characters" }),
+  password: z.string().min(1, { message: "Password is required" }),
 })
 
 type LoginFormData = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
-  const { login } = useAuth()
-  const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { login, loginLoading, loginError, isAuthenticated } = useAuth()
 
   const {
     register,
@@ -42,24 +40,23 @@ export default function LoginPage() {
     },
   })
 
-  const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true)
-    setErrorMessage(null)
-
-    try {
-      const response = await login(data)
-      console.log("Login:", response)
-    } catch (error) {
-      console.error("Login error:", error)
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Failed to login. Please check your credentials and try again."
-      )
-    } finally {
-      setIsLoading(false)
-    }
+  // If already authenticated, show loading state (redirect will happen)
+  if (isAuthenticated) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <p>Redirecting...</p>
+        </div>
+      </div>
+    )
   }
+
+  const onSubmit = (data: LoginFormData) => {
+    login(data)
+  }
+
+  // Get error message from API error or mutation error
+  const errorMessage = loginError?.message || null
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
@@ -68,9 +65,9 @@ export default function LoginPage() {
           <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
             <Shield size={24} />
           </div>
-          <h1 className="text-2xl font-bold">Doqett Compliance</h1>
+          <h1 className="text-2xl font-bold">PledgePoint</h1>
           <p className="text-sm text-muted-foreground">
-            Governance, Risk, and Compliance Management Platform
+            Civic Platform for Democratic Accountability
           </p>
         </div>
 
@@ -79,6 +76,7 @@ export default function LoginPage() {
             <CardTitle>Login to your account</CardTitle>
             <CardDescription>Enter your credentials to access the platform</CardDescription>
           </CardHeader>
+
           <CardContent>
             {errorMessage && (
               <div className="mb-4 flex items-center gap-2 rounded-md border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
@@ -88,8 +86,11 @@ export default function LoginPage() {
             )}
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="form-field">
-                <label htmlFor="email" className="form-label">
+              <div className="space-y-2">
+                <label
+                  htmlFor="email"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
                   Email
                 </label>
                 <div className="relative">
@@ -99,20 +100,21 @@ export default function LoginPage() {
                   <input
                     id="email"
                     type="email"
-                    className={`w-full rounded-md border pl-10 py-2 text-sm ${
-                      errors.email ? "border-destructive focus:ring-destructive" : "border-input"
+                    className={`flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 pl-10 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${
+                      errors.email ? "border-destructive" : ""
                     }`}
                     placeholder="Enter your email"
                     {...register("email")}
                   />
                 </div>
-                {errors.email && (
-                  <p className="mt-1 text-xs text-destructive">{errors.email.message}</p>
-                )}
+                {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
               </div>
 
-              <div className="form-field">
-                <label htmlFor="password" className="form-label">
+              <div className="space-y-2">
+                <label
+                  htmlFor="password"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
                   Password
                 </label>
                 <div className="relative">
@@ -122,15 +124,15 @@ export default function LoginPage() {
                   <input
                     id="password"
                     type="password"
-                    className={`w-full rounded-md border pl-10 py-2 text-sm ${
-                      errors.password ? "border-destructive focus:ring-destructive" : "border-input"
+                    className={`flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 pl-10 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 ${
+                      errors.password ? "border-destructive" : ""
                     }`}
                     placeholder="Enter your password"
                     {...register("password")}
                   />
                 </div>
                 {errors.password && (
-                  <p className="mt-1 text-xs text-destructive">{errors.password.message}</p>
+                  <p className="text-sm text-destructive">{errors.password.message}</p>
                 )}
               </div>
 
@@ -150,14 +152,18 @@ export default function LoginPage() {
                 </Link>
               </div>
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Log in"}
+              <Button type="submit" className="w-full" disabled={loginLoading}>
+                {loginLoading ? "Logging in..." : "Log in"}
               </Button>
             </form>
           </CardContent>
+
           <CardFooter className="flex flex-col space-y-4">
             <div className="text-center text-sm text-muted-foreground">
-              <span>Don&apos;t have an account? Contact your administrator</span>
+              <span>Don't have an account? </span>
+              <Link href="/auth/register" className="text-primary hover:underline">
+                Sign up
+              </Link>
             </div>
           </CardFooter>
         </Card>

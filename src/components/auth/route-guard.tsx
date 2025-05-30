@@ -21,22 +21,23 @@ export function RouteGuard({
   const pathname = usePathname()
 
   useEffect(() => {
-    if (!isLoading) {
-      // If auth required but user not authenticated
-      if (requireAuth && !isAuthenticated) {
-        router.push(redirectTo)
-        return
-      }
+    // Don't do anything while still loading
+    if (isLoading) return
 
-      // If user is authenticated but on auth pages, redirect to dashboard
-      if (isAuthenticated && pathname.startsWith("/auth")) {
-        router.push("/dashboard")
-        return
-      }
+    // If auth is required but user is not authenticated
+    if (requireAuth && !isAuthenticated) {
+      router.push(redirectTo)
+      return
+    }
+
+    // If user is authenticated but trying to access auth pages
+    if (isAuthenticated && pathname.startsWith("/auth")) {
+      router.push("/")
+      return
     }
   }, [isAuthenticated, isLoading, requireAuth, router, pathname, redirectTo])
 
-  // Show loading skeleton while checking auth
+  // Show loading while checking auth
   if (isLoading) {
     return (
       <div className="flex flex-col space-y-4 p-4">
@@ -47,12 +48,11 @@ export function RouteGuard({
     )
   }
 
-  // Don't render if auth check fails
+  // Don't render if waiting for redirect
   if (requireAuth && !isAuthenticated) {
     return null
   }
 
-  // Don't render auth pages if already authenticated
   if (isAuthenticated && pathname.startsWith("/auth")) {
     return null
   }
@@ -60,7 +60,7 @@ export function RouteGuard({
   return <>{children}</>
 }
 
-// Higher-order component for protecting pages
+// HOC for protecting entire pages
 export function withAuth<P extends object>(Component: React.ComponentType<P>, requireAuth = true) {
   return function AuthenticatedComponent(props: P) {
     return (

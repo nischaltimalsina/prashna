@@ -5,6 +5,7 @@ export interface User {
   email: string
   district?: string
   bio?: string
+  photo?: string
   role: "user" | "moderator" | "admin" | "superadmin"
   level: "citizen" | "advocate" | "leader"
   impactPoints: number

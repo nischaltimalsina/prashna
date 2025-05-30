@@ -1,79 +1,122 @@
+"use client"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
+import Cookies from "js-cookie"
 import { authApi } from "@/lib/api/services"
-import { User, RegisterRequest, LoginRequest, AuthResponse, ApiResponse } from "@/lib/api/types"
+import { User, RegisterRequest, LoginRequest } from "@/lib/api/types"
 
 export const useAuth = () => {
   const queryClient = useQueryClient()
+  const router = useRouter()
 
-  // Get current user
+  // Get current user - only if we have a token
   const {
-    data: user,
+    data: userData,
     isLoading,
     error,
   } = useQuery({
     queryKey: ["auth", "me"],
     queryFn: () => authApi.getCurrentUser(),
+    enabled: !!Cookies.get("auth_token"), // Only run if token exists
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
   })
 
-  // Register mutation
-  const registerMutation = useMutation({
-    mutationFn: (data: RegisterRequest) => authApi.register(data),
-    onSuccess: (authResponse: AuthResponse) => {
-      // Store the user data in React Query cache
+  // Login mutation
+  const loginMutation = useMutation({
+    mutationFn: async (data: LoginRequest) => {
+      const response = await authApi.login(data)
+
+      // Store token in cookie
+      Cookies.set("auth_token", response.data.accessToken, {
+        expires: 7, // 7 days
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+      })
+
+      return response
+    },
+    onSuccess: (authResponse) => {
+      // Cache user data
       queryClient.setQueryData(["auth", "me"], {
         success: true,
         data: authResponse.data.user,
       })
+
+      // Redirect to dashboard
+      router.push("/")
+    },
+    onError: (error) => {
+      console.error("Login failed:", error)
+      // Clear any existing token on login failure
+      Cookies.remove("auth_token")
     },
   })
 
-  // Login mutation - Fixed to handle your API response
-  const loginMutation = useMutation({
-    mutationFn: (data: LoginRequest) => authApi.login(data),
-    onSuccess: (authResponse: AuthResponse) => {
-      // Store the user data in React Query cache
+  // Register mutation
+  const registerMutation = useMutation({
+    mutationFn: async (data: RegisterRequest) => {
+      const response = await authApi.register(data)
+
+      // Store token
+      Cookies.set("auth_token", response.data.accessToken, {
+        expires: 7,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+      })
+
+      return response
+    },
+    onSuccess: (authResponse) => {
       queryClient.setQueryData(["auth", "me"], {
         success: true,
         data: authResponse.data.user,
       })
+      router.push("/")
     },
   })
 
   // Update profile mutation
   const updateProfileMutation = useMutation({
     mutationFn: (data: Partial<User>) => authApi.updateProfile(data),
-    onSuccess: (data: ApiResponse<User>) => {
+    onSuccess: (data) => {
       queryClient.setQueryData(["auth", "me"], data)
     },
   })
 
-  // Logout mutation
-  const logoutMutation = useMutation({
-    mutationFn: () => {
-      authApi.logout()
-      return Promise.resolve()
-    },
-    onSuccess: () => {
-      queryClient.clear()
-    },
-  })
+  // Logout function
+  const logout = () => {
+    // Clear token
+    Cookies.remove("auth_token")
+
+    // Clear all cached data
+    queryClient.clear()
+
+    // Redirect to login
+    router.push("/auth/login")
+  }
 
   return {
-    user: user?.data,
+    // State
+    user: userData?.data || null,
     isLoading,
     error,
-    isAuthenticated: !!user?.data,
-    register: registerMutation.mutate,
+    isAuthenticated: !!userData?.data && !!Cookies.get("auth_token"),
+
+    // Actions
     login: loginMutation.mutate,
-    logout: logoutMutation.mutate,
+    register: registerMutation.mutate,
+    logout,
     updateProfile: updateProfileMutation.mutate,
-    registerLoading: registerMutation.isPending,
+
+    // Loading states
     loginLoading: loginMutation.isPending,
+    registerLoading: registerMutation.isPending,
     updateLoading: updateProfileMutation.isPending,
-    registerError: registerMutation.error,
+
+    // Errors
     loginError: loginMutation.error,
+    registerError: registerMutation.error,
     updateError: updateProfileMutation.error,
   }
 }

@@ -31,25 +31,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
+    >
       <body className="antialiased min-h-screen flex flex-col">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <ClientBody>
-            <div className="flex flex-col min-h-screen">
-              <SiteHeader />
-              <main className="max-w-screen-xl w-full mx-auto flex-1">
-                <Providers>
-                  <ErrorBoundary>
-                  {children}
-                  </ErrorBoundary>
-                </Providers>
-              </main>
-              <SiteFooter />
-            </div>
+            <Providers>
+              <div className="flex flex-col min-h-screen">
+                <SiteHeader />
+                <main className="max-w-screen-xl w-full mx-auto flex-1">
+                  <ErrorBoundary>{children}</ErrorBoundary>
+                </main>
+                <SiteFooter />
+              </div>
+            </Providers>
           </ClientBody>
-          <Toaster/>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }
