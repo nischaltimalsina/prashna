@@ -13,9 +13,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Search, LogOut, User, Settings } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
+import { getAvatarUrl } from "@/lib/utils/avatar"
+import Image from "next/image"
 
 export function SiteHeader() {
   const { user, isAuthenticated, logout } = useAuth()
+
+  console.log("SiteHeader user:", user)
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -41,7 +45,7 @@ export function SiteHeader() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" className="h-9 w-9 mr-2">
+          <Button variant="outline" size="icon" className="h-9 w-9">
             <Search className="h-4 w-4" />
             <span className="sr-only">Search</span>
           </Button>
@@ -50,12 +54,17 @@ export function SiteHeader() {
           {isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                  <Avatar className="h-8 w-8">
+                <Button variant="ghost" className="relative h-9 w-9 rounded-md">
+                  <Avatar className="h-9 w-9 rounded-md border">
                     <AvatarImage src={user.photo} alt={user.firstName} />
-                    <AvatarFallback>
-                      {user.firstName?.[0]}
-                      {user.lastName?.[0]}
+                    <AvatarFallback className="rounded-md">
+                      <Image
+                        src={getAvatarUrl(user.gender)}
+                        alt={user.firstName + " " + user.lastName}
+                        className="w-full h-full object-cover dark:invert"
+                        width={100}
+                        height={100}
+                      />
                     </AvatarFallback>
                   </Avatar>
                 </Button>

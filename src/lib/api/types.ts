@@ -10,12 +10,13 @@ export interface User {
   level: "citizen" | "advocate" | "leader"
   impactPoints: number
   accountStatus: "active" | "suspended" | "pending"
+  gender: "male" | "female" | "other" | "prefer-not-to-say"
   createdAt: string
   updatedAt: string
 }
 
 export interface Official {
-  _id: string;
+  _id: string
   name: string
   position: string
   district: string
@@ -25,7 +26,7 @@ export interface Official {
     end: Date
   }
   dob: Date
-  gender: 'male' | 'female' | 'other' | 'prefer-not-to-say'
+  gender: "male" | "female" | "other" | "prefer-not-to-say"
   verified?: boolean
   contactInfo: {
     email?: string
@@ -53,23 +54,31 @@ export interface Official {
   totalRatings: number
   createdAt: Date
   updatedAt: Date
-
 }
 
 export interface Rating {
-  id: string;
-  officialId: string;
-  userId: string;
-  integrity: number;
-  responsiveness: number;
-  effectiveness: number;
-  transparency: number;
-  comment?: string;
-  evidence?: string;
-  upvotes: number;
-  downvotes: number;
-  createdAt: string;
-  updatedAt: string;
+  id: string
+  officialId: string
+  userId: {
+    _id: string
+    firstName: string
+    lastName: string
+    photo: string
+    gender: "male" | "female" | "other" | "prefer-not-to-say"
+    level: "citizen" | "advocate" | "leader"
+    impactPoints: number
+  }
+  integrity: number
+  responsiveness: number
+  effectiveness: number
+  transparency: number
+  overall: number
+  comment?: string
+  evidence?: string
+  upvotes: string[]
+  downvotes: string[]
+  createdAt: string
+  updatedAt: string
 }
 
 export interface Promise {

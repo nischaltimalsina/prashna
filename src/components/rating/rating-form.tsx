@@ -67,7 +67,7 @@ export function RatingForm({ official, onSuccess, trigger }: RatingFormProps) {
       effectiveness: 0,
       transparency: 0,
       comment: "",
-      evidence: "",
+      evidence: undefined,
     },
   })
 

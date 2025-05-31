@@ -56,8 +56,8 @@ export const authApi = {
     return authResponse
   },
 
-  getCurrentUser: async (): globalThis.Promise<ApiResponse<User>> => {
-    const response = await apiClient.get<ApiResponse<User>>("/auth/me")
+  getCurrentUser: async (): globalThis.Promise<{ status: string; data: { user: User } }> => {
+    const response = await apiClient.get<{ status: string; data: { user: User } }>("/auth/me")
     return response.data
   },
 
@@ -99,44 +99,61 @@ export const authApi = {
 // Officials Service
 export const officialsApi = {
   getAll: async (filters?: OfficialsFilters): globalThis.Promise<PaginatedResponse<Official>> => {
-    const response = await apiClient.get<PaginatedResponse<Official>>('/officials', {
+    const response = await apiClient.get<PaginatedResponse<Official>>("/officials", {
       params: filters,
-    });
-    return response.data;
+    })
+    return response.data
   },
 
   getById: async (id: string): globalThis.Promise<ApiResponse<Official>> => {
-    const response = await apiClient.get<ApiResponse<Official>>(`/officials/${id}`);
-    return response.data;
+    const response = await apiClient.get<ApiResponse<Official>>(`/officials/${id}`)
+    return response.data
   },
 
-  getTopRated: async (params?: { limit?: number; district?: string }): globalThis.Promise<ApiResponse<Official[]>> => {
-    const response = await apiClient.get<ApiResponse<Official[]>>('/officials/top-rated', {
+  getTopRated: async (params?: {
+    limit?: number
+    district?: string
+  }): globalThis.Promise<ApiResponse<Official[]>> => {
+    const response = await apiClient.get<ApiResponse<Official[]>>("/officials/top-rated", {
       params,
-    });
-    return response.data;
+    })
+    return response.data
   },
 
-  rate: async (officialId: string, rating: RatingRequest): globalThis.Promise<ApiResponse<Rating>> => {
-    const response = await apiClient.post<ApiResponse<Rating>>(`/officials/${officialId}/rate`, rating);
-    return response.data;
+  rate: async (
+    officialId: string,
+    rating: RatingRequest
+  ): globalThis.Promise<{ message: string; data: Rating }> => {
+    const response = await apiClient.post<{ message: string; data: Rating }>(
+      `/officials/${officialId}/rate`,
+      rating
+    )
+    console.log("Rating response:", response.data)
+    return response.data
+  },
+
+  getRatings: async (officialId: string): globalThis.Promise<ApiResponse<Rating[]>> => {
+    const response = await apiClient.get<ApiResponse<Rating[]>>(`/officials/${officialId}/ratings`)
+    return response.data
   },
 
   upvoteRating: async (ratingId: string): globalThis.Promise<ApiResponse<any>> => {
-    const response = await apiClient.post<ApiResponse<any>>(`/officials/ratings/${ratingId}/upvote`);
-    return response.data;
+    const response = await apiClient.post<ApiResponse<any>>(`/officials/ratings/${ratingId}/upvote`)
+    return response.data
   },
 
   downvoteRating: async (ratingId: string): globalThis.Promise<ApiResponse<any>> => {
-    const response = await apiClient.post<ApiResponse<any>>(`/officials/ratings/${ratingId}/downvote`);
-    return response.data;
+    const response = await apiClient.post<ApiResponse<any>>(
+      `/officials/ratings/${ratingId}/downvote`
+    )
+    return response.data
   },
 
   create: async (data: Partial<Official>): globalThis.Promise<ApiResponse<Official>> => {
-    const response = await apiClient.post<ApiResponse<Official>>('/officials', data);
-    return response.data;
+    const response = await apiClient.post<ApiResponse<Official>>("/officials", data)
+    return response.data
   },
-};
+}
 
 // Promises Service
 export const promisesApi = {

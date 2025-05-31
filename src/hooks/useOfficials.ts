@@ -41,6 +41,14 @@ export const useRateOfficial = () => {
   });
 };
 
+export const useOfficialRatings = (officialId: string) => {
+  return useQuery({
+    queryKey: ['officials', officialId, 'ratings'],
+    queryFn: () => officialsApi.getRatings(officialId),
+    enabled: !!officialId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
 export const useVoteRating = () => {
   const queryClient = useQueryClient();
 

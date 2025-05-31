@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from "axios"
+import Cookies from "js-cookie"
 import { ApiResponse } from "./types"
 
 // Create custom error class
@@ -22,11 +23,10 @@ const createApiClient = (): AxiosInstance => {
   // Request interceptor to add auth token
   client.interceptors.request.use(
     (config) => {
-      if (typeof window !== "undefined") {
-        const token = localStorage.getItem("auth_token")
-        if (token && config.headers) {
-          config.headers.Authorization = `Bearer ${token}`
-        }
+      // Get token from cookies instead of localStorage
+      const token = Cookies.get("auth_token")
+      if (token && config.headers) {
+        config.headers.Authorization = `Bearer ${token}`
       }
       return config
     },
@@ -36,17 +36,62 @@ const createApiClient = (): AxiosInstance => {
   // Response interceptor for error handling
   client.interceptors.response.use(
     (response) => response,
-    (error: AxiosError) => {
+    async (error: AxiosError) => {
+      const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean }
+
       if (error.response) {
         const { status, data } = error.response
         const errorData = data as ApiError
 
-        // Handle token expiration
-        if (status === 401) {
-          // Clear token and redirect to login
-          if (typeof window !== "undefined") {
-            localStorage.removeItem("auth_token")
-            localStorage.removeItem("refresh_token")
+        // Handle token expiration with refresh
+        if (status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true
+
+          try {
+            const refreshToken = Cookies.get("refresh_token")
+            if (refreshToken) {
+              // Try to refresh the token
+              const refreshResponse = await axios.post(
+                `${
+                  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3030/api/v1"
+                }/auth/refresh-token`,
+                { refreshToken }
+              )
+
+              const newToken = refreshResponse.data.data.accessToken
+
+              // Update token in cookies
+              Cookies.set("auth_token", newToken, {
+                expires: 7,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "strict",
+              })
+
+              // Update refresh token if provided
+              if (refreshResponse.data.data.refreshToken) {
+                Cookies.set("refresh_token", refreshResponse.data.data.refreshToken, {
+                  expires: 30,
+                  secure: process.env.NODE_ENV === "production",
+                  sameSite: "strict",
+                })
+              }
+
+              // Retry original request with new token
+              if (originalRequest.headers) {
+                originalRequest.headers.Authorization = `Bearer ${newToken}`
+              }
+
+              return client(originalRequest)
+            }
+          } catch (refreshError) {
+            // Refresh failed, clear tokens and redirect will be handled by useAuth
+            Cookies.remove("auth_token")
+            Cookies.remove("refresh_token")
+
+            // Redirect to login in browser environment
+            if (typeof window !== "undefined") {
+              window.location.href = "/auth/login"
+            }
           }
         }
 
@@ -90,21 +135,33 @@ export const api = {
   },
 }
 
-// Helper function to set token
+// Helper function to set token (for auth service)
 export const setAuthToken = (token: string | null) => {
-  if (typeof window !== "undefined") {
-    if (token) {
-      localStorage.setItem("auth_token", token)
-    } else {
-      localStorage.removeItem("auth_token")
-    }
+  if (token) {
+    Cookies.set("auth_token", token, {
+      expires: 7,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    })
+  } else {
+    Cookies.remove("auth_token")
   }
 }
 
 // Helper function to get token
 export const getAuthToken = (): string | null => {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("auth_token")
+  return Cookies.get("auth_token") || null
+}
+
+// Helper function to set refresh token
+export const setRefreshToken = (token: string | null) => {
+  if (token) {
+    Cookies.set("refresh_token", token, {
+      expires: 30,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    })
+  } else {
+    Cookies.remove("refresh_token")
   }
-  return null
 }
